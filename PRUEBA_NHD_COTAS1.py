@@ -10,18 +10,15 @@ usernames = st.secrets["auth"]["usernames"]
 passwords = st.secrets["auth"]["passwords"]
 names = st.secrets["auth"]["names"]
 
-# Aplicar el hash a cada contraseña usando el método estático hash() y pasando el argumento por palabra clave
-hashed_passwords = [stauth.Hasher.hash(password=p) for p in passwords]
+# Aplicar el hash a las contraseñas: se instancia Hasher con cada contraseña individualmente
+hashed_passwords = [stauth.Hasher(p).hash() for p in passwords]
 
-# Crear el diccionario de credenciales en el formato que espera streamlit_authenticator
+# Crear el diccionario de credenciales en el formato requerido
 credentials = {
-    "usernames": {
-        usernames[i]: {"password": hashed_passwords[i], "name": names[i]} 
-        for i in range(len(usernames))
-    }
+    "usernames": {usernames[i]: {"password": hashed_passwords[i], "name": names[i]} for i in range(len(usernames))}
 }
 
-# Crear el autenticador con el diccionario de credenciales
+# Crear el autenticador pasando las credenciales como argumento
 authenticator = stauth.Authenticate(
     credentials=credentials,
     cookie_name="cookie_name",
@@ -29,8 +26,8 @@ authenticator = stauth.Authenticate(
     cookie_expiry_days=30
 )
 
-# Autenticación
-name, authentication_status = authenticator.login("Iniciar sesión", "main")
+# Autenticación: usa location="main" en lugar de pasar "main" como argumento posicional
+name, authentication_status = authenticator.login("Iniciar sesión", location="main")
 
 if authentication_status:
     st.write(f"Bienvenido {name}")
