@@ -7,29 +7,26 @@ import streamlit_authenticator as stauth
 
 import streamlit_authenticator as stauth
 
-# Obtención de los datos de autenticación del archivo secrets.toml
+# Obtener las credenciales del archivo secrets.toml
 usernames = st.secrets["auth"]["usernames"]
 passwords = st.secrets["auth"]["passwords"]
 names = st.secrets["auth"]["names"]
 
-# Aplica el método hash() a cada contraseña
-hashed_passwords = [stauth.Hasher.hash(p) for p in passwords]
+# Aplicar el hash a cada contraseña
+hashed_passwords = [stauth.Hasher().hash(p) for p in passwords]
 
-# Crear el diccionario de credenciales
+# Crear un diccionario de credenciales
 credentials = {
-    'usernames': usernames,
-    'passwords': hashed_passwords,
-    'names': names
+    "usernames": {usernames[i]: {"password": hashed_passwords[i], "name": names[i]} for i in range(len(usernames))}
 }
 
 # Crear el autenticador con el diccionario de credenciales
 authenticator = stauth.Authenticate(
-    credentials=credentials,  # Pasamos el diccionario de credenciales
+    credentials=credentials,
     cookie_name="cookie_name",
-    key="your_key",  # Reemplaza "your_key" con una clave única y segura
+    key="your_key",  # Reemplaza con tu clave secreta
     cookie_expiry_days=30
 )
-
 
 # Autenticación
 name, authentication_status = authenticator.login("Iniciar sesión", "main")
