@@ -12,7 +12,8 @@ passwords = st.secrets["auth"]["passwords"]
 names = st.secrets["auth"]["names"]
 
 # Hashing de contraseñas
-hashed_passwords = stauth.Hasher(passwords).hash()
+
+hashed_passwords = stauth.Hasher(passwords).generate()
 
 # Crear la instancia del autenticador
 authenticator = stauth.Authenticate(
