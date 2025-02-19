@@ -10,10 +10,8 @@ usernames = st.secrets["auth"]["usernames"]
 passwords = st.secrets["auth"]["passwords"]
 names = st.secrets["auth"]["names"]
 
-# Aplicar el hash a las contraseñas usando Hasher
 # Aplicar el hash a cada contraseña
-hashed_passwords = [stauth.Hasher().hash(p) for p in passwords]
-
+hashed_passwords = stauth.Hasher(passwords).generate()
 
 # Crear un diccionario de credenciales
 credentials = {
