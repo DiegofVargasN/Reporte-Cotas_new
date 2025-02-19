@@ -15,6 +15,8 @@ def authenticate(username, password):
 if "authenticated" not in st.session_state:
     st.session_state.authenticated = False
 
+    st.info("prueba")
+
 if not st.session_state.authenticated:
     st.title("Inicio de Sesión Cotas NHDCOTAS")
     username = st.text_input("Usuario")
