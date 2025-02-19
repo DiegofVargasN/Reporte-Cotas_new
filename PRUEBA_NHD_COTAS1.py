@@ -5,15 +5,13 @@ from plotly.subplots import make_subplots
 import plotly.graph_objects as go
 import streamlit_authenticator as stauth
 
-import streamlit_authenticator as stauth
-
 # Obtener las credenciales del archivo secrets.toml
 usernames = st.secrets["auth"]["usernames"]
 passwords = st.secrets["auth"]["passwords"]
 names = st.secrets["auth"]["names"]
 
-# Aplicar el hash a cada contraseña
-hashed_passwords = [stauth.Hasher().hash(p) for p in passwords]
+# Aplicar el hash a las contraseñas usando Hasher
+hashed_passwords = stauth.Hasher(passwords).generate()
 
 # Crear un diccionario de credenciales
 credentials = {
