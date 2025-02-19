@@ -12,7 +12,7 @@ passwords = st.secrets["auth"]["passwords"]
 names = st.secrets["auth"]["names"]
 
 # Hashing de contraseñas
-hashed_passwords = stauth.Hasher(passwords).generate()
+hashed_passwords = stauth.Hasher(passwords).hash()
 
 # Crear la instancia del autenticador
 authenticator = stauth.Authenticate(
@@ -173,4 +173,5 @@ if authentication_status:
         st.info("Por favor sube un archivo Excel para comenzar.")
 else:
     st.warning("Por favor, inicia sesión para acceder al reporte.")
+
 
