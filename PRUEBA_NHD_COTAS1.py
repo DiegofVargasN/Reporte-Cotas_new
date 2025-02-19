@@ -10,15 +10,17 @@ usernames = st.secrets["auth"]["usernames"]
 passwords = st.secrets["auth"]["passwords"]
 names = st.secrets["auth"]["names"]
 
-# Aplicar el hash a las contraseñas: se instancia Hasher con cada contraseña individualmente
-hashed_passwords = [stauth.Hasher(p).hash() for p in passwords]
+# Aplicar el hash a la lista de contraseñas usando el método 'hash'
+# (Dependiendo de la versión, la función hash() se invoca pasando la lista completa)
+hashed_passwords = stauth.Hasher(passwords).hash(passwords)
 
-# Crear el diccionario de credenciales en el formato requerido
+# Crear el diccionario de credenciales en el formato que espera streamlit_authenticator
 credentials = {
-    "usernames": {usernames[i]: {"password": hashed_passwords[i], "name": names[i]} for i in range(len(usernames))}
+    "usernames": {usernames[i]: {"password": hashed_passwords[i], "name": names[i]} 
+                  for i in range(len(usernames))}
 }
 
-# Crear el autenticador pasando las credenciales como argumento
+# Crear el autenticador con el diccionario de credenciales
 authenticator = stauth.Authenticate(
     credentials=credentials,
     cookie_name="cookie_name",
@@ -26,7 +28,7 @@ authenticator = stauth.Authenticate(
     cookie_expiry_days=30
 )
 
-# Autenticación: usa location="main" en lugar de pasar "main" como argumento posicional
+# Autenticación (usamos location="main" para indicar la ubicación)
 name, authentication_status = authenticator.login("Iniciar sesión", location="main")
 
 if authentication_status:
@@ -170,4 +172,3 @@ if authentication_status:
         st.info("Por favor sube un archivo Excel para comenzar.")
 else:
     st.warning("Por favor, inicia sesión para acceder al reporte.")
-
