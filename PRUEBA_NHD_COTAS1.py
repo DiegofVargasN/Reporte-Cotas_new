@@ -18,7 +18,7 @@ if "authenticated" not in st.session_state:
     st.info("Inicio de Sesión Cotas NHDCOTAS")
 
 if not st.session_state.authenticated:
-    #st.title("Inicio de Sesión Cotas NHDCOTAS")
+    st.title("Inicio de Sesión Cotas NHDCOTAS")
     username = st.text_input("Usuario")
     password = st.text_input("Contraseña", type="password")
     if st.button("Ingresar"):
