@@ -5,27 +5,19 @@ from plotly.subplots import make_subplots
 import plotly.graph_objects as go
 import streamlit_authenticator as stauth
 
-# Obtener las credenciales del archivo secrets.toml
+# Obtener credenciales desde secrets.toml
 usernames = st.secrets["auth"]["usernames"]
 passwords = st.secrets["auth"]["passwords"]
 names = st.secrets["auth"]["names"]
 
-# Hashing de contraseñas: pasamos la lista de passwords al constructor y luego llamamos a hash()
-hashed_passwords = stauth.Hasher(passwords).hash()
+# Generar hashes (v0.2.0+)
+hashed_passwords = stauth.Hasher(passwords).generate()
 
-# Crear el diccionario de credenciales en el formato que espera streamlit_authenticator
-credentials = {
-    "usernames": {
-        usernames[i]: {"password": hashed_passwords[i], "name": names[i]} 
-        for i in range(len(usernames))
-    }
-}
-
-# Crear el autenticador pasando el diccionario de credenciales
+# Configurar autenticador
 authenticator = stauth.Authenticate(
-    credentials=credentials,
-    cookie_name="cookie_name",
-    key="your_key",  # Reemplaza con una clave secreta única
+    credentials={"usernames": {usernames[i]: {"name": names[i], "password": hashed_passwords[i]} for i in range(len(usernames))},
+    cookie_name="my_cookie",
+    key="mi_clave_secreta",
     cookie_expiry_days=30
 )
 
