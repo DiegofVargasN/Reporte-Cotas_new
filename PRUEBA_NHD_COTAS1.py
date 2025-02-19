@@ -11,7 +11,18 @@ usernames = st.secrets["auth"]["usernames"]
 passwords = st.secrets["auth"]["passwords"]
 names = st.secrets["auth"]["names"]
 
-authenticator = stauth.Authenticate(usernames, passwords, names, cookie_name="cookie_name", key="your_key", cookie_expiry_days=30)
+# Hashing de contraseñas
+hashed_passwords = stauth.Hasher(passwords).generate()
+
+# Crear la instancia del autenticador
+authenticator = stauth.Authenticate(
+    usernames=usernames, 
+    passwords=hashed_passwords, 
+    names=names, 
+    cookie_name="cookie_name", 
+    key="your_key", 
+    cookie_expiry_days=30
+)
 
 # Autenticación
 name, authentication_status = authenticator.login("Iniciar sesión", "main")
@@ -70,15 +81,15 @@ if authentication_status:
             # Si se selecciona "Todos" se ignora el filtro de CODSERV.
             if selected_codserv == "Todos":
                 mask = (
-                    (df['ESTADO'].isin(selected_estados)) &
-                    (df['PERIODO'] >= start_date) &
+                    (df['ESTADO'].isin(selected_estados)) & 
+                    (df['PERIODO'] >= start_date) & 
                     (df['PERIODO'] <= end_date)
                 )
             else:
                 mask = (
-                    (df['CODSERV'] == selected_codserv) &
-                    (df['ESTADO'].isin(selected_estados)) &
-                    (df['PERIODO'] >= start_date) &
+                    (df['CODSERV'] == selected_codserv) & 
+                    (df['ESTADO'].isin(selected_estados)) & 
+                    (df['PERIODO'] >= start_date) & 
                     (df['PERIODO'] <= end_date)
                 )
             filtered_df = df.loc[mask]
@@ -132,8 +143,8 @@ if authentication_status:
             # ---------------------------
             # Gráfico Top 10: se aplica el filtro de ESTADO y PERIODO (sin el filtro de CODSERV)
             top_mask = (
-                (df['ESTADO'].isin(selected_estados)) &
-                (df['PERIODO'] >= start_date) &
+                (df['ESTADO'].isin(selected_estados)) & 
+                (df['PERIODO'] >= start_date) & 
                 (df['PERIODO'] <= end_date)
             )
             top_df = (
