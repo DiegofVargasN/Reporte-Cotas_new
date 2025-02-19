@@ -10,19 +10,22 @@ usernames = st.secrets["auth"]["usernames"]
 passwords = st.secrets["auth"]["passwords"]
 names = st.secrets["auth"]["names"]
 
-# Aplicar el hash a cada contraseña (CORRECCIÓN: usar .hash() en lugar de .generate())
-hashed_passwords = stauth.Hasher(passwords).hash()
+# Aplicar el hash a cada contraseña: instanciar Hasher con cada contraseña y luego llamar a hash()
+hashed_passwords = [stauth.Hasher(p).hash() for p in passwords]
 
-# Crear un diccionario de credenciales
+# Crear el diccionario de credenciales
 credentials = {
-    "usernames": {usernames[i]: {"password": hashed_passwords[i], "name": names[i]} for i in range(len(usernames))}
+    "usernames": {
+        usernames[i]: {"password": hashed_passwords[i], "name": names[i]} 
+        for i in range(len(usernames))
+    }
 }
 
 # Crear el autenticador con el diccionario de credenciales
 authenticator = stauth.Authenticate(
     credentials=credentials,
     cookie_name="cookie_name",
-    key="your_key",  # Reemplaza con tu clave secreta
+    key="your_key",  # Reemplaza con una clave única y segura
     cookie_expiry_days=30
 )
 
@@ -79,20 +82,17 @@ if authentication_status:
             start_date = pd.to_datetime(start_period, format='%Y-%m')
             end_date = pd.to_datetime(end_period, format='%Y-%m')
             
-            # Filtrar datos para el gráfico de tendencia:
-            # Si se selecciona "Todos" se ignora el filtro de CODSERV.
+            # Filtrar datos para el gráfico de tendencia
             if selected_codserv == "Todos":
                 mask = (
                     (df['ESTADO'].isin(selected_estados)) & 
-                    (df['PERIODO'] >= start_date) & 
-                    (df['PERIODO'] <= end_date)
+                    (df['PERIODO'].between(start_date, end_date))
                 )
             else:
                 mask = (
                     (df['CODSERV'] == selected_codserv) & 
                     (df['ESTADO'].isin(selected_estados)) & 
-                    (df['PERIODO'] >= start_date) & 
-                    (df['PERIODO'] <= end_date)
+                    (df['PERIODO'].between(start_date, end_date))
                 )
             filtered_df = df.loc[mask]
             
@@ -142,12 +142,10 @@ if authentication_status:
             else:
                 st.warning("No hay datos que coincidan con los filtros para la tendencia.")
             
-            # ---------------------------
             # Gráfico Top 10: se aplica el filtro de ESTADO y PERIODO (sin el filtro de CODSERV)
             top_mask = (
                 (df['ESTADO'].isin(selected_estados)) & 
-                (df['PERIODO'] >= start_date) & 
-                (df['PERIODO'] <= end_date)
+                (df['PERIODO'].between(start_date, end_date))
             )
             top_df = (
                 df.loc[top_mask]
@@ -175,5 +173,6 @@ if authentication_status:
         st.info("Por favor sube un archivo Excel para comenzar.")
 else:
     st.warning("Por favor, inicia sesión para acceder al reporte.")
+
 
 
