@@ -13,7 +13,7 @@ names = st.secrets["auth"]["names"]
 # Aplica el método hash() a cada contraseña
 hashed_passwords = [stauth.Hasher.hash(p) for p in passwords]
 
-# Crea el diccionario de credenciales
+# Crea el diccionario de credenciales con la estructura correcta
 credentials = {
     'usernames': usernames,
     'passwords': hashed_passwords,
@@ -22,7 +22,9 @@ credentials = {
 
 # Crea el autenticador con los datos obtenidos y contraseñas hasheadas
 authenticator = stauth.Authenticate(
-    credentials=credentials,  # Pasa las credenciales como argumento
+    usernames=credentials['usernames'],
+    passwords=credentials['passwords'],
+    names=credentials['names'],
     cookie_name="cookie_name",
     key="your_key",  # Reemplaza "your_key" con una clave única y segura
     cookie_expiry_days=30
