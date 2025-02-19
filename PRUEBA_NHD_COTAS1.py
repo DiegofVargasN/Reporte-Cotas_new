@@ -28,6 +28,12 @@ if not st.session_state.authenticated:
             st.error("Usuario o contraseña incorrectos")
     st.stop()
 
+# Botón de cierre de sesión
+if st.button("Cerrar Sesión"):
+    st.session_state.authenticated = False
+    st.session_state.username = ""
+    st.rerun()
+
 # Título de la app
 st.title(f'Reporte Facturación NHDCOTAS - Usuario: {st.session_state.username}')
 
@@ -108,5 +114,4 @@ if uploaded_file:
         st.plotly_chart(fig_top10, use_container_width=True)
 else:
     st.info("Por favor sube un archivo Excel para comenzar.")
-
 
