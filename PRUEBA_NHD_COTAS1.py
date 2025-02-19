@@ -174,5 +174,3 @@ if authentication_status:
 else:
     st.warning("Por favor, inicia sesión para acceder al reporte.")
 
-
-
