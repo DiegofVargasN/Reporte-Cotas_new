@@ -10,10 +10,10 @@ usernames = st.secrets["auth"]["usernames"]
 passwords = st.secrets["auth"]["passwords"]
 names = st.secrets["auth"]["names"]
 
-# Aplicar el hash a cada contraseña: instanciar Hasher con cada contraseña y luego llamar a hash()
-hashed_passwords = [stauth.Hasher(p).hash() for p in passwords]
+# Aplicar el hash a cada contraseña usando el método estático hash() y pasando el argumento por palabra clave
+hashed_passwords = [stauth.Hasher.hash(password=p) for p in passwords]
 
-# Crear el diccionario de credenciales
+# Crear el diccionario de credenciales en el formato que espera streamlit_authenticator
 credentials = {
     "usernames": {
         usernames[i]: {"password": hashed_passwords[i], "name": names[i]} 
@@ -25,7 +25,7 @@ credentials = {
 authenticator = stauth.Authenticate(
     credentials=credentials,
     cookie_name="cookie_name",
-    key="your_key",  # Reemplaza con una clave única y segura
+    key="your_key",  # Reemplaza con una clave secreta única
     cookie_expiry_days=30
 )
 
@@ -74,15 +74,15 @@ if authentication_status:
             
             # Selector de rango de PERIODO
             periodos = sorted(df['PERIODO_FMT'].unique())
-            start_period, end_period = st.select_slider(
+            start_period_val, end_period_val = st.select_slider(
                 'Selecciona rango de periodos:', 
                 options=periodos, 
                 value=(periodos[0], periodos[-1])
             )
-            start_date = pd.to_datetime(start_period, format='%Y-%m')
-            end_date = pd.to_datetime(end_period, format='%Y-%m')
+            start_date = pd.to_datetime(start_period_val, format='%Y-%m')
+            end_date = pd.to_datetime(end_period_val, format='%Y-%m')
             
-            # Filtrar datos para el gráfico de tendencia
+            # Filtrar datos para el gráfico de tendencia:
             if selected_codserv == "Todos":
                 mask = (
                     (df['ESTADO'].isin(selected_estados)) & 
